@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+  <title>Truth or Love</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div id="particles"></div>
+
+<!-- ═══════════════════════════
+     LANDING
+═══════════════════════════ -->
+<section id="s-landing" class="screen active">
+  <div class="landing-wrap">
+    <div class="landing-eyebrow">A Game for Two ✦</div>
+    <h1 class="landing-title">Truth<br><em>or Love</em></h1>
+    <p class="landing-sub">Questions that open hearts. Challenges that deepen bonds.</p>
+    <button class="btn-hero" id="btn-begin">Begin Together</button>
+    <p class="landing-fine">Real-time · One or two phones · 18+</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     PLAY MODE — how to play?
+═══════════════════════════ -->
+<section id="s-mode" class="screen">
+  <div class="page-wrap">
+    <button class="btn-back" id="btn-back-mode">← Back</button>
+    <h2 class="page-title">How will you play?</h2>
+    <p class="page-sub">Choose based on where you both are right now</p>
+
+    <div class="play-mode-cards">
+
+      <button class="play-mode-card local-card" id="btn-local">
+        <span class="pm-icon">📱</span>
+        <div class="pm-body">
+          <strong>One Phone</strong>
+          <span>Share a single device. Pass it between turns. Perfect for date night.</span>
+        </div>
+        <span class="pm-arrow">→</span>
+      </button>
+
+      <button class="play-mode-card online-card" id="btn-online">
+        <span class="pm-icon">📲</span>
+        <div class="pm-body">
+          <strong>Two Phones</strong>
+          <span>Each person uses their own device in real-time. Perfect for long distance.</span>
+        </div>
+        <span class="pm-arrow">→</span>
+      </button>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     LOCAL SETUP (one phone)
+═══════════════════════════ -->
+<section id="s-local-setup" class="screen">
+  <div class="page-wrap">
+    <button class="btn-back" id="btn-back-local">← Back</button>
+    <h2 class="page-title">Set Up Your Game</h2>
+    <p class="page-sub">Both players fill in your details</p>
+
+    <div class="local-players">
+
+      <div class="local-player-card p1-lcard">
+        <div class="lp-label">Player 1</div>
+        <div class="lp-avatar" id="lp1-avatar"><span id="lp1-emoji">🌹</span></div>
+        <div class="lp-emoji-grid" id="lp1-grid"></div>
+        <input class="lp-name" id="lp1-name" type="text" placeholder="Your name" maxlength="14"/>
+      </div>
+
+      <div class="lp-vs">♥</div>
+
+      <div class="local-player-card p2-lcard">
+        <div class="lp-label">Player 2</div>
+        <div class="lp-avatar p2-av" id="lp2-avatar"><span id="lp2-emoji">🔥</span></div>
+        <div class="lp-emoji-grid" id="lp2-grid"></div>
+        <input class="lp-name" id="lp2-name" type="text" placeholder="Your name" maxlength="14"/>
+      </div>
+
+    </div>
+
+    <p class="mode-label">Choose your game mode</p>
+    <div class="mode-grid" id="local-mode-grid">
+      <button class="mode-card active" data-mode="random"><span class="mode-icon">🎲</span><strong>Random</strong><small>Mix of everything</small></button>
+      <button class="mode-card" data-mode="sweet"><span class="mode-icon">🌸</span><strong>Sweet</strong><small>Lighthearted & romantic</small></button>
+      <button class="mode-card" data-mode="flirty"><span class="mode-icon">💋</span><strong>Flirty</strong><small>Playful & flirtatious</small></button>
+      <button class="mode-card" data-mode="deep"><span class="mode-icon">🌊</span><strong>Deep</strong><small>Emotionally meaningful</small></button>
+      <button class="mode-card" data-mode="date"><span class="mode-icon">🌙</span><strong>Date Night</strong><small>For your special evening</small></button>
+      <button class="mode-card" data-mode="distance"><span class="mode-icon">✈️</span><strong>Long Distance</strong><small>When miles apart</small></button>
+    </div>
+
+    <button class="btn-primary" id="btn-start-local" style="width:100%;margin-top:1.2rem">Start Game →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     ONLINE ROOM (two phones)
+═══════════════════════════ -->
+<section id="s-room" class="screen">
+  <div class="page-wrap">
+    <button class="btn-back" id="btn-back-room">← Back</button>
+    <h2 class="page-title">Connect</h2>
+    <p class="page-sub">One of you creates the room, the other joins</p>
+
+    <div class="room-cards">
+      <div class="glass-card room-opt create-opt">
+        <span class="room-icon">✦</span>
+        <h3>Create a Room</h3>
+        <p>Start a new game and share your code</p>
+        <button class="btn-primary" id="btn-create">Create Room</button>
+      </div>
+      <div class="room-divider">or</div>
+      <div class="glass-card room-opt join-opt">
+        <span class="room-icon">♥</span>
+        <h3>Join a Room</h3>
+        <p>Your partner already created one? Enter their code</p>
+        <div class="join-row">
+          <input id="join-input" class="code-input" type="text" maxlength="6" placeholder="A1B2C3" autocapitalize="characters" autocomplete="off"/>
+          <button class="btn-primary" id="btn-join">Join</button>
+        </div>
+        <p class="join-err hidden" id="join-err">Room not found. Check the code.</p>
+      </div>
+    </div>
+
+    <div class="config-warn hidden" id="config-warn">
+      ⚠️ Firebase not configured — see <strong>SETUP.md</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     ONLINE PLAYER SETUP
+═══════════════════════════ -->
+<section id="s-setup" class="screen">
+  <div class="page-wrap">
+    <div class="setup-role-tag" id="setup-role-tag">Player 1</div>
+    <h2 class="page-title" style="margin-top:.6rem">Your Profile</h2>
+    <div class="avatar-ring" id="setup-avatar"><span id="setup-emoji">🌹</span></div>
+    <div class="emoji-grid" id="emoji-grid"></div>
+    <input class="name-input" id="setup-name" type="text" placeholder="Your name" maxlength="16"/>
+    <div id="mode-section" class="hidden">
+      <p class="mode-label">Choose your game mode</p>
+      <div class="mode-grid" id="online-mode-grid">
+        <button class="mode-card active" data-mode="random"><span class="mode-icon">🎲</span><strong>Random</strong><small>Mix of everything</small></button>
+        <button class="mode-card" data-mode="sweet"><span class="mode-icon">🌸</span><strong>Sweet</strong><small>Lighthearted & romantic</small></button>
+        <button class="mode-card" data-mode="flirty"><span class="mode-icon">💋</span><strong>Flirty</strong><small>Playful & flirtatious</small></button>
+        <button class="mode-card" data-mode="deep"><span class="mode-icon">🌊</span><strong>Deep</strong><small>Emotionally meaningful</small></button>
+        <button class="mode-card" data-mode="date"><span class="mode-icon">🌙</span><strong>Date Night</strong><small>For your special evening</small></button>
+        <button class="mode-card" data-mode="distance"><span class="mode-icon">✈️</span><strong>Long Distance</strong><small>When miles apart</small></button>
+      </div>
+    </div>
+    <button class="btn-primary" id="btn-ready" style="width:100%;margin-top:1.4rem">I'm Ready ✓</button>
+    <p class="setup-room-note">Room: <span id="setup-room-code">—</span></p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     WAITING (online only)
+═══════════════════════════ -->
+<section id="s-waiting" class="screen">
+  <div class="page-wrap waiting-wrap">
+    <div class="waiting-orb">
+      <div class="w-ring r1"></div><div class="w-ring r2"></div>
+      <span class="w-heart">♥</span>
+    </div>
+    <h2 class="waiting-title">Waiting for your love…</h2>
+    <p class="waiting-sub">Share this code — they open the same link</p>
+    <div class="share-box">
+      <span class="share-code" id="share-code">——</span>
+      <button class="btn-copy" id="btn-copy">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copy Link
+      </button>
+    </div>
+    <div class="partner-status" id="partner-status">
+      <span class="p-dot" id="p-dot"></span>
+      <span id="p-status-text">Partner not yet connected</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     GAME
+═══════════════════════════ -->
+<section id="s-game" class="screen">
+
+  <div class="game-bar">
+    <div class="bar-player bar-p1" id="bar-p1">
+      <span id="bar-p1-emoji">🌹</span>
+      <span class="bar-name" id="bar-p1-name">—</span>
+    </div>
+    <div class="bar-center">
+      <button class="bar-menu-btn" id="btn-menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="19" r="1" fill="currentColor"/></svg>
+      </button>
+    </div>
+    <div class="bar-player bar-p2" id="bar-p2">
+      <span class="bar-name" id="bar-p2-name">—</span>
+      <span id="bar-p2-emoji">🔥</span>
+    </div>
+  </div>
+
+  <div class="turn-strip" id="turn-strip">
+    <div class="turn-avatar" id="turn-avi">🌹</div>
+    <div class="turn-copy">
+      <div class="turn-label" id="turn-label">Your turn</div>
+      <div class="turn-name" id="turn-name">—</div>
+    </div>
+    <div class="mode-pill" id="mode-pill">Random</div>
+  </div>
+
+  <div class="card-zone">
+    <div class="idle-state" id="idle-mine">
+      <div class="idle-prompt">What will you choose?</div>
+      <div class="choice-row">
+        <button class="choice-btn truth-btn" id="btn-truth">
+          <span class="choice-icon">❤️</span>
+          <span class="choice-label">Truth</span>
+          <span class="choice-hint">Open your heart</span>
+        </button>
+        <button class="choice-btn love-btn" id="btn-love">
+          <span class="choice-icon">🔥</span>
+          <span class="choice-label">Love</span>
+          <span class="choice-hint">Take the challenge</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Shown only in two-phone mode when watching partner -->
+    <div class="idle-state hidden" id="idle-theirs">
+      <div class="waiting-card-state">
+        <span class="wc-icon" id="wc-icon">⌛</span>
+        <p class="wc-text" id="wc-text">Waiting for them to choose…</p>
+      </div>
+    </div>
+
+    <div class="game-card hidden" id="game-card">
+      <div class="gc-header">
+        <span class="gc-type" id="gc-type">TRUTH</span>
+        <span class="gc-cat" id="gc-cat">—</span>
+        <button class="fav-btn" id="fav-btn" title="Save to favourites">♡</button>
+      </div>
+      <p class="gc-text" id="gc-text">…</p>
+      <div class="gc-num" id="gc-num">#1</div>
+    </div>
+  </div>
+
+  <div class="timer-wrap" id="timer-wrap">
+    <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+    <span class="timer-num" id="timer-num">60</span>
+  </div>
+
+  <div class="action-row hidden" id="row-actions">
+    <button class="act-btn skip-btn" id="btn-skip">↺ New Card</button>
+    <button class="act-btn done-btn" id="btn-done">✓ Done</button>
+  </div>
+
+  <!-- Online-only watching footer -->
+  <div class="watch-footer hidden" id="watch-footer">
+    <span class="watch-dot"></span>
+    <span id="watch-text">Watching…</span>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════
+     END
+═══════════════════════════ -->
+<section id="s-end" class="screen">
+  <div class="page-wrap end-wrap">
+    <div class="end-confetti" id="end-confetti"></div>
+    <div class="end-heart">♥</div>
+    <h2 class="end-title">Beautiful.</h2>
+    <p class="end-sub">Every round brings you closer together.</p>
+    <div class="end-stats">
+      <div class="stat-row"><span class="stat-label">Cards played</span><span class="stat-val" id="stat-cards">0</span></div>
+      <div class="stat-row"><span class="stat-label">Rounds completed</span><span class="stat-val" id="stat-rounds">0</span></div>
+      <div class="stat-row"><span class="stat-label">Mode</span><span class="stat-val" id="stat-mode">Random</span></div>
+    </div>
+    <div class="fav-summary hidden" id="fav-summary">
+      <p class="fav-summary-title">♥ Saved moments</p>
+      <div class="fav-list" id="fav-list"></div>
+    </div>
+    <button class="btn-primary" id="btn-again">Play Again 🔄</button>
+    <button class="btn-ghost" id="btn-home">Back to Home</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════
+     OVERLAY: MENU
+═══════════════════════════ -->
+<div class="overlay hidden" id="ov-menu">
+  <div class="ov-box">
+    <button class="ov-close" id="close-menu">✕</button>
+    <h3 class="ov-title">Menu</h3>
+    <div class="menu-players">
+      <div class="mp-row"><span id="mp-p1-emoji">🌹</span><div><div class="mp-name" id="mp-p1-name">—</div><div class="mp-cards">Cards: <span id="mp-p1-cards">0</span></div></div></div>
+      <div class="mp-row"><span id="mp-p2-emoji">🔥</span><div><div class="mp-name" id="mp-p2-name">—</div><div class="mp-cards">Cards: <span id="mp-p2-cards">0</span></div></div></div>
+    </div>
+    <div class="menu-info">
+      <span>Round <strong id="mp-round">1</strong></span>
+      <span>·</span>
+      <span>Mode: <strong id="mp-mode">Random</strong></span>
+    </div>
+    <button class="btn-end-sess" id="btn-end-session">End Session</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     OVERLAY: PASS THE PHONE (local mode only)
+═══════════════════════════ -->
+<div class="overlay pass-overlay hidden" id="ov-pass">
+  <div class="pass-box">
+    <div class="pass-emoji" id="pass-emoji">🌹</div>
+    <h2 class="pass-title">Pass the phone</h2>
+    <p class="pass-sub">It's <strong id="pass-name">—</strong>'s turn</p>
+    <p class="pass-hint">Hand the phone over, then tap when ready</p>
+    <button class="btn-primary pass-ready-btn" id="btn-pass-ready">I'm Ready ♥</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
